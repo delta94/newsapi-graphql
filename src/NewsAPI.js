@@ -84,6 +84,35 @@ class NewsAPI extends RESTDataSource {
     }
   }
   
+  async getSourcesByLanguage(lang) {
+    try {
+      const response = await this.get('sources', {
+        apiKey: config.get('newsapi.apiKey'),
+        lang
+      })
+      return response.sources;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async search(query, from, to, page, pageSize) {
+    try {
+      const response = await this.get('everything', {
+        q: query,
+        from,
+        to,
+        page,
+        pageSize,
+        apiKey: config.get('newsapi.apiKey'),
+        language: 'en'
+      })
+      return response.articles;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
 }
 
 module.exports = NewsAPI;

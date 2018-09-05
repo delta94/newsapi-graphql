@@ -54,10 +54,11 @@ const typeDefinitions = gql `
     getHeadlinesByCountry(country: String!): [Article]!
     getHeadlinesByCategory(category: String!): [Article]!
     getHeadlinesByCountryAndCategory(country: String!, category: String!): [Article]!
-    getSources: [Source]
+    getSourcesByLanguage(lang: String!): [Source]!
     getSourcesByCountry(country: String!): SourceResult
     getSourcesByCategory(category: String!): SourceResult
     getIFramelyData(url: String!): IFramely
+    search(query: String!, from: String!, to: String!, page: Int!, pageSize: Int!): [Article]!
   }
   
 `;

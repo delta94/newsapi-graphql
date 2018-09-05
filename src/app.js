@@ -16,8 +16,8 @@ const resolvers = {
     async getHeadlinesByCategory(source, {category}, {dataSources}) {
       return dataSources.newsAPI.getHeadlinesByCategory(category)
     },
-    async getSources(source, args, {dataSources}) {
-      return dataSources.newsAPI.getSources().sources;
+    async getSourcesByLanguage(source, {lang}, {dataSources}) {
+      return dataSources.newsAPI.getSourcesByLanguage(lang);
     },
     async getSourcesByCountry(source, {country}, {dataSources}) {
       return dataSources.newsAPI.getSourcesByCountry(country);
@@ -27,7 +27,11 @@ const resolvers = {
     },
     async getIFramelyData(source, {url}, {dataSources}) {
       return dataSources.IFramelyAPI.getData(url)
+    },
+    async search(source, {query, from, to, page, pageSize}, {dataSources}) {
+      return dataSources.newsAPI.search(query, from, to, page, pageSize)
     }
+
   },
 };
 
