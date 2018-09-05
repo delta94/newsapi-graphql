@@ -1,5 +1,6 @@
 const {RESTDataSource} = require('apollo-datasource-rest');
 const config = require('config');
+const {ApolloError} = require('apollo-server')
 
 class NewsAPI extends RESTDataSource {
 
@@ -8,7 +9,7 @@ class NewsAPI extends RESTDataSource {
       super();
       this.baseURL = config.get('newsapi.url');
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -21,7 +22,7 @@ class NewsAPI extends RESTDataSource {
       });
       return response.articles;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -33,7 +34,7 @@ class NewsAPI extends RESTDataSource {
       });
       return response.articles;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -45,7 +46,7 @@ class NewsAPI extends RESTDataSource {
       });
       return response.articles;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -56,7 +57,7 @@ class NewsAPI extends RESTDataSource {
       });
       return response.sources;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -68,7 +69,7 @@ class NewsAPI extends RESTDataSource {
       });
       return response;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -80,7 +81,7 @@ class NewsAPI extends RESTDataSource {
       })
       return response;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
   
@@ -92,7 +93,7 @@ class NewsAPI extends RESTDataSource {
       })
       return response.sources;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
 
@@ -109,7 +110,7 @@ class NewsAPI extends RESTDataSource {
       })
       return response.articles;
     } catch (error) {
-      console.error(error);
+      throw new ApolloError(error.message, 404)
     }
   }
   

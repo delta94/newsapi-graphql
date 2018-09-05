@@ -1,7 +1,7 @@
 {
   "newsapi": {
     "url": "https://newsapi.org/v2/",
-    "apiKey": "fe687337b43e4bddaf441967d549417d"
+    "apiKey": "68e92dbaaf334e76baadb2f4290c4179"
   },
   "iframely": {
     "url":"https://iframe.ly/",
