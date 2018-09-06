@@ -45,7 +45,7 @@ const typeDefinitions = gql `
     description: String
     logoUrl: String
     site: String,
-    thumbnailUrl: String,
+    thumbnailUrl: String
     url: String,
     title: String
   }
