@@ -52,7 +52,9 @@ const server = new ApolloServer({
   engine: {
     apiKey: "service:prabhuignoto-3209:TfmrgQuQjH_5YoE_W1SK6w"
   },
-  cacheControl: true,
+  cacheControl: {
+    defaultMaxAge: 10,
+  },
   tracing: true,
   formatError: error => {
     console.log(error);
