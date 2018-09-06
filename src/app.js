@@ -44,16 +44,11 @@ const server = new ApolloServer({
       IFramelyAPI: new IFramelyAPI()
     }
   },
-  context: () => {
-    return {
-      token: 'prabhu',
-    }
-  },
   engine: {
     apiKey: "service:prabhuignoto-3209:TfmrgQuQjH_5YoE_W1SK6w"
   },
   cacheControl: {
-    defaultMaxAge: 10,
+    defaultMaxAge: 1800
   },
   tracing: true,
   formatError: error => {
