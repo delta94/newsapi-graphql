@@ -1,0 +1,30 @@
+upstream newsapi {
+  server localhost:4000 weight=1;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+
+  #listen 443 ssl;
+  #ssl on;
+  #ssl_certificate /etc/letsencrypt/live/newsapi.prabhumurthy.com/fullchain.pem;
+  #ssl_certificate_key /etc/letsencrypt/live/newsapi.prabhumurthy.com/privkey.pem;
+  server_name newsapi.prabhumurthy.com;
+
+  #if ($scheme != "https") {
+  #  return 301 https://$host$request_uri;
+  #}
+
+  location / {
+    proxy_pass http://newsapi/;
+  }
+
+  location ^~ /.well-known {
+    allow all;
+    alias /var/www/newsapi/.well-known;
+    auth_basic off;
+    default_type "text/plain";
+    try_files $uri =404;
+  }
+}
