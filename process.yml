@@ -1,0 +1,6 @@
+apps:
+  - script   : './src/app.ts'
+    name     : 'NewsAPI-GraphQL'
+    exec_mode: 'cluster'
+    instances: 3
+    instance_var: 'INSTANCE_ID'

@@ -1,0 +1,10 @@
+{
+  "apps": [
+      {
+          "name": "newsapi-graphql",
+          "script": "./src/app.ts",
+          "instances": "max",
+          "exec_mode": "cluster"
+      }
+  ]
+}
