@@ -1,9 +1,6 @@
-const {
-  gql
-} = require('apollo-server');
+import { gql } from "apollo-server";
 
-const typeDefinitions = gql `
-
+const typeDefinitions = gql`
   type ArticleSource {
     id: String
     name: String
@@ -44,23 +41,28 @@ const typeDefinitions = gql `
     date: String
     description: String
     logoUrl: String
-    site: String,
+    site: String
     thumbnailUrl: String
-    url: String,
+    url: String
     title: String
   }
 
-  type Query {
-    getHeadlinesByCountry(country: String!): [Article]!
-    getHeadlinesByCategory(category: String!): [Article]!
-    getHeadlinesByCountryAndCategory(country: String!, category: String!): [Article]!
-    getSourcesByLanguage(lang: String!): [Source]!
-    getSourcesByCountry(country: String!): SourceResult
-    getSourcesByCategory(category: String!): SourceResult
-    getIFramelyData(url: String!): IFramely
-    search(query: String!, from: String!, to: String!, page: Int!, pageSize: Int!): [Article]!
+  type ImageBase64 {
+    data: String
   }
-  
+
+  type Query {
+    getHeadlines(country: String!, category: String!): [Article]!
+    getIFramelyData(url: String!): IFramely
+    search(
+      query: String!
+      from: String!
+      to: String!
+      page: Int!
+      pageSize: Int!
+    ): [Article]!
+    getBase64Img(url: String!): ImageBase64!
+  }
 `;
 
-module.exports.typeDefinitions = typeDefinitions;
+export default typeDefinitions;
