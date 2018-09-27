@@ -1,0 +1,5 @@
+projects:
+    prisma:
+      schemaPath: ./cache-db-schema/cache-db.graphql
+      extensions:
+        prisma: ../cache-db/prisma.yml
