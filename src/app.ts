@@ -1,3 +1,5 @@
+import "newrelic";
+
 import { ApolloServer } from "apollo-server";
 import { merge } from "lodash";
 // import { Prisma } from "prisma-binding";
