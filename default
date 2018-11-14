@@ -17,6 +17,9 @@ server {
   #}
 
   location / {
+    add_header 'Access-Control-Allow-Origin' 'http://squirrel.prabhumurthy.com';
+    add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS';
+
     proxy_pass http://newsapi/;
   }
 

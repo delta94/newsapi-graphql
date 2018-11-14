@@ -8,5 +8,5 @@ then
   pm2-runtime process.yml
 elif [ $env = "development" ]
 then
-  npm run start
+  npm run dev
 fi

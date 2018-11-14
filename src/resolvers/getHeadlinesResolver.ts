@@ -4,6 +4,7 @@
 
 import { first, pick, size } from "lodash";
 import { DateTime, Interval } from "luxon";
+import { MongoClient } from "mongodb";
 
 interface IArticle {
   author: string;
@@ -42,117 +43,74 @@ export default {
   ) => {
     try {
       const name = `${country}_${category}`;
-      // check if the data is already present in cache and validate if its not stale
-      const cacheResponse: ICacheResponse[] = await prisma.query.headlinesCaches(
-        {
-          where: {
-            name,
-          },
-        },
-        "{timeStamp, id}",
-      );
-      let apiResponse = [];
 
-      if (
-        size(cacheResponse) > 0 &&
-        !dataIsStale(first(cacheResponse)!.timeStamp)
-      ) {
-        const response: IResponse[] = await prisma.query.headlinesCaches(
-          {
-            where: {
-              name,
-            },
-          },
-          `{
-              id,
-              articles {
-                title,
-                url,
-                description,
-                urlToImage,
-                publishedAt,
-                author
-              }
-					  }`,
-        );
-        return first(response)!.articles;
-      } else if (
-        size(cacheResponse) > 0 &&
-        dataIsStale(first(cacheResponse)!.timeStamp)
-      ) {
-        apiResponse = await dataSources.newsAPI.getHeadlinesByCountryAndCategory(
-          country,
-          category,
-        );
-        await prisma.mutation.deleteManyArticles({
-          where: {
-            headlinesID: `${country}_${category}`,
-          },
-        });
-        await prisma.mutation.deleteHeadlinesCache({
-          where: {
-            id: first(cacheResponse)!.id,
-          },
-        });
-        await prisma.mutation.createHeadlinesCache({
-          data: {
-            articles: {
-              create: apiResponse.map(
-                ({
-                  author,
-                  title,
-                  description,
-                  url,
-                  urlToImage,
-                  publishedAt,
-                }: IArticle) => ({
-                  author,
-                  description,
-                  headlinesID: `${country}_${category}`,
-                  publishedAt,
-                  title,
-                  url,
-                  urlToImage,
-                }),
-              ),
-            },
-            name: `${country}_${category}`,
-            timeStamp: new Date().toISOString(),
-          },
-        });
-      } else {
-        apiResponse = await dataSources.newsAPI.getHeadlinesByCountryAndCategory(
-          country,
-          category,
-        );
-        await prisma.mutation.createHeadlinesCache({
-          data: {
-            articles: {
-              create: apiResponse.map(
-                ({
-                  author,
-                  title,
-                  description,
-                  url,
-                  urlToImage,
-                  publishedAt,
-                }: IArticle) => ({
-                  author,
-                  description,
-                  headlinesID: `${country}_${category}`,
-                  publishedAt,
-                  title,
-                  url,
-                  urlToImage,
-                }),
-              ),
-            },
-            name: `${country}_${category}`,
-            timeStamp: new Date().toISOString(),
-          },
-        });
+      // connect to mongodb
+      const mongo = await MongoClient.connect(
+        process.env.MONGO_DB as string,
+        {
+          useNewUrlParser: true,
+        },
+      );
+
+      // check if the collection is already present.
+      const mainCollection = await mongo
+        .db("newsquirrel")
+        .collection(`${country}`)
+        .find({})
+        .toArray();
+
+      // create the collection if its not already present.
+      if (mainCollection.length < 1) {
+        await mongo.db("newsquirrel").createCollection(`${country}`);
       }
-      return apiResponse;
+
+      // get the cache document
+      const cacheDocumentResult = await mongo
+        .db("newsquirrel")
+        .collection(`${country}`)
+        .findOne({
+          name: `${country}_${category}`,
+        });
+
+      // check if the cache for the country with that category already exists
+      if (!cacheDocumentResult) {
+        // get the data from API
+        const newsAPIResponse = await dataSources.newsAPI.getHeadlinesByCountryAndCategory(
+          country,
+          category,
+        );
+        await mongo
+          .db("newsquirrel")
+          .collection(`${country}`)
+          .insertOne({
+            articles: newsAPIResponse,
+            name: `${country}_${category}`,
+            timeStamp: new Date().toISOString(),
+          });
+        return newsAPIResponse;
+      } else {
+        // we are here if the cache is present
+        // check if the cache is still not stale
+        if (dataIsStale(cacheDocumentResult.timeStamp)) {
+          const newsAPIResponse = await dataSources.newsAPI.getHeadlinesByCountryAndCategory(
+            country,
+            category,
+          );
+          await mongo
+            .db("newsquirrel")
+            .collection(`${country}`)
+            .insertOne({
+              articles: newsAPIResponse,
+              name: `${country}_${category}`,
+              timeStamp: new Date().toISOString(),
+            });
+          mongo.close();
+          return newsAPIResponse;
+        } else {
+          mongo.close();
+          return cacheDocumentResult.articles;
+        }
+      }
     } catch (error) {
       console.error(error);
     }

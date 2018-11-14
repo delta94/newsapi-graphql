@@ -1,18 +1,19 @@
 import { Buffer } from "buffer";
 import * as Request from "request-promise";
 import * as Sharp from "sharp";
+import {URL} from "url";
 
 export default {
   getBase64Img: async (source: any, { url }: { url: string }) => {
     try {
-      const responseBuffer = await Request(url, {
+      const parsedURL = new URL(url);
+      const responseBuffer = await Request(parsedURL.toString(), {
         encoding: null,
-        strictSSL: true,
+        strictSSL: parsedURL.protocol === "https:" ? true : false,
       });
 
       const sharpImage = await Sharp(responseBuffer)
         .resize(300, 200)
-        .max()
         .jpeg({
           quality: 95,
         })

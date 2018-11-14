@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server";
 import { merge } from "lodash";
-import { Prisma } from "prisma-binding";
+// import { Prisma } from "prisma-binding";
 import IFramelyAPI from "./IFramelyAPI";
 import NewsAPI from "./NewsAPI";
 import { default as typeDefs } from "./typeDefinitions";
@@ -13,6 +13,7 @@ try {
   if (process.env.NODE_ENV !== "production") {
     config();
   }
+  // connect to mongodb
   const resolvers = merge({
     Query: Object.assign(
       {},
@@ -36,10 +37,10 @@ try {
   const server = new ApolloServer({
     context: (req: {}) => ({
       ...req,
-      prisma: new Prisma({
-        endpoint: process.env.PRISMA_ENDPOINT,
-        typeDefs: "./cache-db-schema/cache-db.graphql",
-      }),
+      // prisma: new Prisma({
+      //   endpoint: process.env.PRISMA_ENDPOINT,
+      //   typeDefs: "./cache-db-schema/cache-db.graphql",
+      // }),
     }),
     dataSources: () => {
       return {
@@ -52,9 +53,11 @@ try {
     typeDefs,
   });
 
-  server.listen({
+  server.listen(
+    {
       port: process.env.PORT || 4000,
-    }, () => console.log(`Server ready at ${process.env.PORT || 4000}`),
+    },
+    () => console.log(`Server ready at ${process.env.PORT || 4000}`),
   );
 } catch (error) {
   console.error(error);

@@ -1,15 +1,17 @@
 {
-  "restartable": "rs",
   "ignore": [
     ".git",
     "node_modules/**/node_modules"
   ],
   "verbose": true,
-  "execMap": {
-    "ts": "ts-node"
-  },
+  "exec": "kill-port --port 9299 && node --inspect=0.0.0.0:9229 -r ts-node/register",
   "watch": [
-    "./src/**/*.ts"
+    "./src/app.ts",
+    "./src/getHeadlinesResolver.ts",
+    "./src/NewsAPI.ts",
+    "./src/typeDefinitions.ts",
+    "./src/resolvers/imageResizeResolver.ts",
+    "./src/resolvers/getHeadlinesResolver.ts"
   ],
   "env": {
     "NODE_ENV": "development"
