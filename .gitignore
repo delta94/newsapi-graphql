@@ -22,3 +22,4 @@ yarn-error.log*
 
 .vscode
 .env
+newrelic_agent.log
