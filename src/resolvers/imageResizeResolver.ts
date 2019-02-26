@@ -13,7 +13,7 @@ export default {
       });
 
       const sharpImage = await Sharp(responseBuffer)
-        .resize(200, 200)
+        .resize(250, 250)
         .jpeg({
           quality: 95,
         })
