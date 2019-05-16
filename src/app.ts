@@ -39,11 +39,10 @@ try {
   const server = new ApolloServer({
     context: (req: {}) => ({
       ...req,
-      // prisma: new Prisma({
-      //   endpoint: process.env.PRISMA_ENDPOINT,
-      //   typeDefs: "./cache-db-schema/cache-db.graphql",
-      // }),
     }),
+    cors: {
+      origin: "*",
+    },
     dataSources: () => {
       return {
         IFramelyAPI: new IFramelyAPI(),
